@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script src="plugin/jquery-3.2.1.min.js"></script>
+<script>
+    function moveUp(obj) {
+        var current = $(obj).parent().parent(); //获取当前<tr>
+        var prev = current.prev();  //获取当前<tr>前一个元素
+        if (current.index() > 0) {
+            current.insertBefore(prev); //插入到当前<tr>前一个元素前
+        }
+    }
+    // 下移
+    function moveDown(obj) {
+        var current = $(obj).parent().parent(); //获取当前<tr>
+        var next = current.next(); //获取当前<tr>后面一个元素
+        if (next) {
+            current.insertAfter(next);  //插入到当前<tr>后面一个元素后面
+        }
+    }
+
+</script>
+<body>
+<table>
+    <tr>
+        <td><input  type="button" value="上移" onclick="moveUp(this)"/></td>
+        <td><input  type="button" value="下移" onclick="moveDown(this)"/></td>
+        <td>1</td>
+    </tr>
+    <tr>
+        <td><input  type="button" value="上移" onclick="moveUp(this)"/></td>
+        <td><input  type="button" value="下移" onclick="moveDown(this)"/></td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td><input  type="button" value="上移" onclick="moveUp(this)"/></td>
+        <td><input  type="button" value="下移" onclick="moveDown(this)"/></td>
+        <td>3</td>
+    </tr>
+</table>
+</body>
+</html>
