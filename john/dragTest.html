@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试拖拽</title>
+</head>
+<style>
+    table {
+        border: 1px  solid black;
+        border-collapse: collapse;
+    }
+    td {
+        border: 1px solid red;
+    }
+</style>
+<script src="plugin/jquery-3.2.1.min.js"></script>
+<script>
+    function addEvent(el,list){  // 参数说明：（table对象，数据列表）
+        $(el).find('tbody>tr').each(function(i, ele){
+
+            $(ele).off("dragstart dragover dragleave drop");
+
+            $(ele).on('dragstart', function(event){
+                let evt = event.originalEvent;
+                evt.dataTransfer.setData('Text', i);
+                evt.dataTransfer.effectAllowed = 'move';
+            })
+                .on( 'dragover', function(event){
+                    console.log('dragover');
+                    event.preventDefault();
+                    let targetRect = event.currentTarget.getBoundingClientRect();
+                    let clientY = event.originalEvent.clientY;
+                    let clientYt = targetRect.height/2+targetRect.top;
+                    let $ele = $(event.currentTarget);
+                    if(clientY<clientYt){
+                        $ele.removeClass('up');
+                        $ele.addClass('down');
+                    } else {
+                        $ele.addClass('up');
+                        $ele.removeClass('down');
+                    }
+                })
+                .on( 'drop', function(event){
+                    let index1 = +event.originalEvent.dataTransfer.getData('Text');
+                    let index2 = i;
+                    event.target.parentNode.classList.remove('over');
+                    event.target.parentNode.classList.remove('up');
+                    event.target.parentNode.classList.remove('down');
+                    if(index1!=index2){
+                        let targetRect = event.currentTarget.getBoundingClientRect();
+                        let clientY = event.originalEvent.clientY;
+                        let middle = targetRect.height/2+targetRect.top;
+                        if(clientY<middle){
+                            list.splice(index2, 0, list[index1]);
+                            list.splice(index1+(index1-index2>0?1:0), 1);
+                        } else {
+                            list.splice(index2+1 , 0, list[index1]);
+                            list.splice(index1+(index1-index2>0?1:0) , 1);
+                        }
+                    }
+
+                })
+                .on( 'dragleave', function(event){
+                    event.target.parentNode.classList.remove('over');
+                    event.target.parentNode.classList.remove('up');
+                    event.target.parentNode.classList.remove('down');
+                });
+        });
+    }
+    window.onload = function () {
+        console.log('onload')
+        $('#tbodyId').find('tr').each(function (i,ele) {
+            console.log('i:' + i + '|ele==' + ele);
+            $(ele).off("dragstart dragover dragleave drop");
+            $(ele).on("dragstart",function(event){
+                console.log('startdrag')
+                let evt = event.originalEvent;
+                evt.dataTransfer.effectAllowed = 'move';
+            }).on( 'dragover', function(event){
+                //console.log('dragover');
+                event.preventDefault();
+            })
+                .on( 'drop', function(event){
+                    console.log('drop：' + i);
+                    event.preventDefault();
+
+                   // $('#tbodyId').find('tr')[i].remove();
+
+                    //$('#tbodyId').append("<tr><td>john4</td><td>22</td><td>M</td></tr>");
+                    $('#tbodyId').append(ele);
+                })
+                .on( 'dragleave', function(event){
+                    console.log('dragleave');
+                    event.preventDefault();
+                    //$('#tbodyId').find('tr').append(ele);
+                });
+        })
+        /*let tbody = document.getElementById('tbodyId').children;
+        console.log(tbody)
+        for (let i = 0; i < tbody.length; i++) {
+            let ele = tbody[i];
+
+            //ele.off("dragstart dragover dragleave drop");
+            ele.on('dragstart', function(event){
+                let evt = event.originalEvent;
+                evt.dataTransfer.effectAllowed = 'move';
+            })
+                .on( 'dragover', function(event){
+                    console.log('dragover');
+                    event.preventDefault();
+                })
+                .on( 'drop', function(event){
+                    console.log('drop');
+                })
+                .on( 'dragleave', function(event){
+                    console.log('dragleave');
+                });
+        }*/
+    }
+</script>
+<body>
+<div>
+    <table>
+        <thead>
+            <tr>
+                <td>Index</td>
+                <td>Name</td>
+                <td>Age</td>
+                <td>Gender</td>
+            </tr>
+        </thead>
+        <tbody draggable="true" id="tbodyId">
+            <tr draggable="true" >
+                <td>1</td>
+                <td>John1</td>
+                <td>25</td>
+                <td>M</td>
+            </tr>
+            <tr draggable="true">
+                <td>2</td>
+                <td>John2</td>
+                <td>26</td>
+                <td>M</td>
+            </tr>
+            <tr draggable="true">
+                <td>3</td>
+                <td>John3</td>
+                <td>27</td>
+                <td>M</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
